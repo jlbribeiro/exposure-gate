@@ -63,6 +63,8 @@ setTimeout(()=>{
   }, 1000)
 }, 5000)
 
+window.transaction_list = [];
 $(document).on('new-transaction', function(transaction){
   console.log(transaction);
+  window.transaction_list.push(transaction);
 });
