@@ -82,6 +82,7 @@ function main() {
       };
 
       console.log("[+] A transaction occurred.");
+      console.log(transaction);
       io.emit("transaction", transaction);
     }
   );

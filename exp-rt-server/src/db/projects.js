@@ -26,7 +26,7 @@ class Projects {
         });
       }
 
-      this.projectByWallet[project.wallet] = {
+      this.projectByWallet[project.wallet.toLowerCase()] = {
         name: project.name,
         avatar_url: project.image,
         users: users

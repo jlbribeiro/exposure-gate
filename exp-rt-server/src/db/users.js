@@ -14,7 +14,9 @@ class Users {
         continue;
       }
 
-      this.userByWallet[user.wallet] = user;
+      if (user.wallet != null || user.wallet != undefined) {
+        this.userByWallet[user.wallet.toLowerCase()] = user;
+      }
     }
   }
 
