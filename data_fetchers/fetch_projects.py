@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3.5
+#!/usr/local/bin/python3
 from aiohttp import ClientSession
 import aiohttp
 import asyncio
