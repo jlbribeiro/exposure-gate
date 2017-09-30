@@ -63,3 +63,6 @@ setTimeout(()=>{
   }, 1000)
 }, 5000)
 
+$(document).on('new-transaction', function(transaction){
+  console.log(transaction);
+});

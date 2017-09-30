@@ -1,6 +1,9 @@
 var socket = io("http://localhost:8080");
 
-socket.on("transaction", transaction => {
-  console.log(transaction);
+window.transactions = [];
+
+socket.on("transaction", function(transaction){
+  window.transactions.push(transaction);
+  $(document).trigger('new-transaction', transaction);
 });
 
