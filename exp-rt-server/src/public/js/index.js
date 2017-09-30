@@ -1,7 +1,7 @@
 $(document).ready(()=>{
   var container = document.getElementById('root');
   window.users = new vis.DataSet();
-  window.transactions = new vis.DataSet();
+  window.transactions = new vis.DataSet([], {queue: {delay: 50}});
   var data = {
     nodes: users,
     edges: transactions,
@@ -22,27 +22,24 @@ $(document).ready(()=>{
         color: "#11CC11"
       }
     },
-    interaction: {
-      zoomView: false
-    },
-    physics: {
+    /*physics: {
       solver: 'repulsion'
-    },
-    edges: {
+    },*/
+    /*edges: {
       physics: false
-    }
+    }*/
   }
-  var network = new vis.Network(container, data, options);
+  window.network = new vis.Network(container, data, options);
 
   for(var i = 0; i < allUsers.length; i++) {
-    if(allUsers[i]['wallet'] != '') {
-      users.add({id: allUsers[i]['wallet'], color: "#11CC11"})
+    if(allUsers[i]['wallet'] != undefined && allUsers[i]['wallet'] != '') {
+      users.update({id: allUsers[i]['wallet'].replace('0x','').replace('-',''), color: "#11CC11", label: allUsers[i]['name'], title: allUsers[i]['name']})
     }
   }
 
   for(var i = 0; i < allProjects.length; i++) {
-    if(allProjects[i]['wallet'] != '') {
-      users.add({id: allProjects[i]['wallet'], color: "#1111CC"})
+    if(allProjects[i]['wallet'] != undefined && allProjects[i]['wallet'] != '') {
+      users.update({id: allProjects[i]['wallet'].replace('0x','').replace('-',''), color: "#1111CC", label: allProjects[i]['name'], title: allProjects[i]['name']})
     }
   }
 
@@ -51,8 +48,3 @@ $(document).ready(()=>{
   network.redraw()
 });
 
-$(document).on('new-transaction', function(event, transaction){
-  console.log(transaction)
-  window.transactions.add({from: transaction['from']['wallet'], to: transaction['to']['name']});
-
-});
