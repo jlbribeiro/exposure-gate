@@ -5,11 +5,20 @@ let Express = require("express");
 let Io = require("socket.io");
 let Web3 = require("web3");
 
+let Users = require("./db/users");
+let Projects = require("./db/projects");
+
 const PORT = process.env.PORT || 8080;
+
+const UNKNOWN_AVATAR_URL = "";
 
 const EXP_CONTRACT_ADDRESS = "0x0ce335bb2d04595c84e3d444675360f64de386e8";
 const EXP_CONTRACT_ABI = JSON.parse(
   Fs.readFileSync("exp_contract.json", "UTF-8", "r")
+);
+
+const PROJECTS = JSON.parse(
+  Fs.readFileSync("data/projects.json", "UTF-8", "r")
 );
 
 function main() {
@@ -24,6 +33,9 @@ function main() {
   let ExpContract = web3.eth.contract(EXP_CONTRACT_ABI);
   let expContract = ExpContract.at(EXP_CONTRACT_ADDRESS);
 
+  let users = new Users();
+  let projects = new Projects();
+
   expContract.Transfer(
     {},
     {
@@ -33,9 +45,33 @@ function main() {
     (err, result) => {
       let blockID = result.blockNumber;
       let transactionID = result.transactionIndex;
-      let from = result.args._from;
-      let to = result.args._to;
+      let fromAddress = result.args._from;
+      let toAddress = result.args._to;
       let value = result.args._value.c[0];
+
+      let from = users.getByAddress(fromAddress);
+      if (!from) {
+        from = projects.getByAddress(fromAddress);
+      }
+
+      let to = users.getByAddress(toAddress);
+      if (!to) {
+        to = projects.getByAddress(toAddress);
+      }
+
+      if (!from) {
+        from = {
+          name: fromAddress,
+          avatar_url: UNKNOWN_AVATAR_URL
+        };
+      }
+
+      if (!to) {
+        to = {
+          name: toAddress,
+          avatar_url: UNKNOWN_AVATAR_URL
+        };
+      }
 
       let transaction = {
         block_id: blockID,
